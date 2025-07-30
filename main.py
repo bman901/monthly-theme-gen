@@ -17,10 +17,10 @@ import pytz
 from smtplib import SMTP
 from email.mime.text import MIMEText
 
-now = datetime.datetime.now(pytz.timezone("Australia/Brisbane"))
-if now.day != 1:
-    print("⏳ Not the 1st of the month – skipping theme generation.")
-    exit()
+# now = datetime.datetime.now(pytz.timezone("Australia/Brisbane"))
+# if now.day != 1:
+#     print("⏳ Not the 1st of the month – skipping theme generation.")
+#     exit()
 
 # --- CONFIGURATION ---
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
