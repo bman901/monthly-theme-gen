@@ -23,16 +23,16 @@ if now.day != 1:
     exit()
 
 # --- CONFIGURATION ---
-client = OpenAI(api_key=os.environ("OPENAI_API_KEY"))
-AIRTABLE_PAT = os.environ("AIRTABLE_PAT")
-AIRTABLE_BASE_ID = os.environ("AIRTABLE_BASE_ID")
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+AIRTABLE_PAT = os.getenv("AIRTABLE_PAT")
+AIRTABLE_BASE_ID = os.getenv("AIRTABLE_BASE_ID")
 AIRTABLE_TABLE_NAME = "MonthlyThemes"
-EMAIL_RECIPIENT = os.environ("NOTIFY_EMAIL")
+EMAIL_RECIPIENT = os.getenv("NOTIFY_EMAIL")
 
 SMTP_SERVER = "smtp.gmail.com"
 SMTP_PORT = 587
-SMTP_USERNAME = os.environ("SMTP_USERNAME")
-SMTP_PASSWORD = os.environ("SMTP_PASSWORD")
+SMTP_USERNAME = os.getenv("SMTP_USERNAME")
+SMTP_PASSWORD = os.getenv("SMTP_PASSWORD")
 
 
 # --- FUNCTIONS ---
