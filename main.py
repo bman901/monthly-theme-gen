@@ -71,18 +71,20 @@ def fetch_all_subjects(segment):
                if "Subject" in record["fields"])
 
 
-def generate_new_themes(segment):
+def build_prompt(segment, extra_prompt=""):
     month_year = get_month_year()
+
     if segment == "Pre-Retiree":
         persona_context = (
-            "Tailor your suggestions to Paul and Lisa Harrington, a married couple in their late 50s based in QLD. "
+            "Tailor your suggestions to Paul and Lisa Harrington, a married couple in their late 50s based in South East QLD. "
             "They’re financially comfortable but time-poor, running a homewares business and working part-time as an engineer. "
             "They value family, travel, simplicity, and confidence in their future. "
             "Themes should help them navigate complexity (super, offset, business sale) and feel ready for the next chapter, "
-            "without overwhelming them with jargon. ")
+            "without overwhelming them with jargon. "
+        )
     elif segment == "Retiree":
         persona_context = (
-            "Tailor your suggestions to Alan and Margaret Rowe, a retired couple in their mid to late 60s living in Redland Bay, QLD. "
+            "Tailor your suggestions to Alan and Margaret Rowe, a retired couple in their mid to late 60s living in South East QLD. "
             "They are organised savers who now seek peace of mind, simplicity, and clarity in their financial drawdown phase. "
             "Alan is detail-focused and likes logic and models, while Margaret values clarity and emotional connection. "
             "Themes should speak to issues like confident drawdown, managing market risk, gifting to family, staying independent, and simplifying estate planning. "
@@ -95,13 +97,18 @@ def generate_new_themes(segment):
         persona_context +
         f"Please do not include any references to Centrelink. "
         f"Generate 3–5 helpful and timely financial planning email campaign themes for {segment.lower()} clients in Australia. "
+        f"Use Australian language i.e. not American or British "
         f"Ensure at least one theme is tied to financial planning issues relevant to the month of {month_year}. "
-        f"Use Australian English when writing the subject and description i.e. don't use American or British only terms "
         f"Each theme should include a short subject line followed by a one-sentence description. "
         f"Please do not use en dashes (–) or em dashes (—); use standard hyphens (-) instead. "
-        f"The output should be in the format: 'Subject: ...\\nDescription: ...' for each theme."
+        f"The output should be in the format: 'Subject: ...\\nDescription: ...' for each theme. "
+        f"{extra_prompt}"
     )
+    return prompt
 
+
+def generate_new_themes(segment):
+    prompt = build_prompt(segment)
     response = client.chat.completions.create(
         model="gpt-4o",
         messages=[{
