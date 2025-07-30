@@ -1,7 +1,6 @@
 name: Monthly Python Script
 
 on:
-  on:
   schedule:
     - cron: '0 22 28-31 * *'  # 8am AEST on the 1st (when it’s 10pm UTC on the last day of month)
   workflow_dispatch:     # Allows manual triggering
