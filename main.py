@@ -185,7 +185,7 @@ def notify_editor(theme_summary):
 
     body_html += """
             </div>
-            <p style='margin-top: 30px;'>Visit the Streamlit app to choose your campaign topics.</p>
+            <p style='margin-top: 30px;'>Visit the Streamlit app to choose your campaign topics: <a href='https://hfp-monthly-theme-selector.streamlit.app/' target='_blank'>Open Theme Selector</a>.</p>
             <p>– Automated Assistant</p>
         </body>
     </html>
