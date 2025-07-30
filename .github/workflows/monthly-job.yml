@@ -1,0 +1,30 @@
+name: Monthly Python Script
+
+on:
+  on:
+  schedule:
+    - cron: '0 22 28-31 * *'  # 8am AEST on the 1st (when it’s 10pm UTC on the last day of month)
+  workflow_dispatch:     # Allows manual triggering
+
+jobs:
+  run-script:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run script
+        env:
+          MY_SECRET: ${{ secrets.MY_SECRET }}
+        run: python main.py
