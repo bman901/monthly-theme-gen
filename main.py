@@ -249,7 +249,7 @@ def run_monthly_theme_generation():
         recent_subjects = fetch_recent_subjects(segment)
         print(f"Found {len(old_themes)} reusable themes")
         new_themes = generate_new_themes(segment)
-        deduped_themes = [(s, d) for s, d in new_themes
+        deduped = [(s, d) for s, d in new_themes
                           if not is_similar(s, recent_subjects)]
 
         # If less than 3 new usable themes, ask GPT to try again with a more creative prompt
