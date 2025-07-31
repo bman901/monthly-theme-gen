@@ -66,12 +66,9 @@ def fetch_recent_subjects(segment, months_back=6):
     headers = {"Authorization": f"Bearer {AIRTABLE_PAT}"}
     url = f"https://api.airtable.com/v0/{AIRTABLE_BASE_ID}/{AIRTABLE_TABLE_NAME}"
 
-    recent_months = []
-    for i in range(months_back):
-        dt = now - datetime.timedelta(days=30 * i)
-        recent_months.append(dt.strftime("%B %Y"))
-
-    formula = f"AND(Segment = '{segment}', OR({','.join([f\"Month = '{m}'\" for m in recent_months])}))"
+    recent_months = [(now - datetime.timedelta(days=30 * i)).strftime("%B %Y") for i in range(months_back)]
+    conditions = ", ".join([f"Month = '{m}'" for m in recent_months])
+    formula = f"AND(Segment = '{segment}', OR({conditions}))"
     params = {"filterByFormula": formula}
 
     response = requests.get(url, headers=headers, params=params)
@@ -80,11 +77,7 @@ def fetch_recent_subjects(segment, months_back=6):
         return []
 
     records = response.json().get("records", [])
-    return [
-        record["fields"].get("Subject", "").strip()
-        for record in records
-        if "Subject" in record["fields"]
-    ]
+    return [r["fields"].get("Subject", "").strip() for r in records if "Subject" in r["fields"]]
 
 
 
