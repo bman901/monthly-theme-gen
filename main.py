@@ -108,16 +108,16 @@ def build_prompt(segment, extra_prompt=""):
         Financial clarity vs. complexity
         Confidence and regret
         Personal goals like travel, family, and flexibility
-        Invisible risks or missed opportunities"""
-        f"Please do not include any references to Centrelink. "
-        f"Use Australian language i.e. not American or British "
-        f"Ensure at least one theme is tied to financial planning issues relevant to the month of {month_year}. "
-        f"Each theme should include a short subject line followed by a one-sentence description. "
-        f"Don't be specific about the persona's situation or names, they're intended to be general in nature "
-        f"Please do not use en dashes (–) or em dashes (—); use standard hyphens (-) instead. "
-        f"The output should be in the format: 'Subject: ...\\nDescription: ...' for each theme. "
-        f"Return only the themes. Do not include explanations or introductory text."
-        f"{extra_prompt}"
+        Invisible risks or missed opportunities
+        Please do not include any references to Centrelink.
+        Use Australian language i.e. not American or British
+        Ensure at least one theme is tied to financial planning issues relevant to the month of {month_year}. 
+        Each theme should include a short subject line followed by a one-sentence description. 
+        Don't be specific about the persona's situation or names, they're intended to be general in nature 
+        Please do not use en dashes (–) or em dashes (—); use standard hyphens (-) instead. 
+        The output should be in the format: 'Subject: ...\\nDescription: ...' for each theme. 
+        Return only the themes. Do not include explanations or introductory text.
+        {extra_prompt}"""
     )
     return prompt
 
