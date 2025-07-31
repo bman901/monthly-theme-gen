@@ -76,47 +76,61 @@ def build_prompt(segment, extra_prompt=""):
 
     if segment == "Pre-Retiree":
         persona_context = (
-            "Tailor your suggestions to Paul and Lisa Harrington, a married couple in their late 50s based in South East QLD. "
-            "They’re financially comfortable but time-poor, running a homewares business and working part-time as an engineer. "
-            "They value family, travel, simplicity, and confidence in their future. "
-            "Themes should help them navigate complexity (super, offset, business sale) and feel ready for the next chapter, "
-            "without overwhelming them with jargon. "
+            f"""Tailor these suggestions to pre-retirees like Paul and Lisa Harrington—smart, capable Australians in their late 50s juggling work, family, and finances. They're time-poor but financially comfortable. Paul is semi-retired and consults a few days a week. Lisa co-runs a small business. They have ~$1.3m in super, business equity, and a mortgage nearly paid off. Their goal is lifestyle flexibility—travel, time with family, scaling back work—but they want to feel confident they’re making smart decisions with their resources.
+            Themes should help this group:
+            - Simplify complex financial lives (e.g. multiple super accounts, offset loans, business equity)
+            - Know when and how to reduce work without risking future security
+            - Explore how to convert equity into income without losing control
+            - Understand what “getting it right” looks like for people who’ve done well but aren’t sure they’re on track
+            - Avoid procrastination and get clarity before it’s too late
+            - Frame advice as a strategic edge, not a remedial fix"""
         )
     elif segment == "Retiree":
         persona_context = (
-            "Tailor your suggestions to Alan and Margaret Rowe, a retired couple in their mid to late 60s living in South East QLD. "
-            "They are organised savers who now seek peace of mind, simplicity, and clarity in their financial drawdown phase. "
-            "Alan is detail-focused and likes logic and models, while Margaret values clarity and emotional connection. "
-            "Themes should speak to issues like confident drawdown, managing market risk, gifting to family, staying independent, and simplifying estate planning. "
-            "Avoid complexity or jargon—they value advice that’s calm, clear, and deeply aligned with their lifestyle. "
+            f"""Tailor these suggestions to recent retirees like Alan and Margaret Rowe—calm, organised Australians in their mid-to-late 60s who have done well financially and are now focused on drawing down wisely. Alan is systems-focused and likes logic and models. Margaret is reflective and values connection and clarity. They have ~$1.7m in super (in pension phase), term deposits, and shares, and no mortgage. They value independence, simplicity, and knowing they’re doing it right.
+            Themes should help this group:
+            - Draw confidently from super without fear of running out
+            - Understand the ripple effects of gifting, downsizing, or market volatility
+            - Simplify estate planning and administrative complexity
+            - Balance being careful with actually enjoying their money
+            - Reduce decision fatigue through visual models or steady plans
+            - Frame advice as a safeguard for the future, not a disruption to the present"""
         )
     else:
         persona_context = ""
 
     prompt = (
         persona_context +
-        f"""You are helping develop marketing email themes for Hatch Financial Planning in Logan, Queensland. These are not full emails—just compelling topic ideas that could later be developed into full emails.
-        Audience: People aged 50–65 with $1M+ in investable assets, approaching retirement in the next 3–10 years. They’re experienced professionals and business owners who value clarity and confidence about their financial future. They’re asking not “Can we retire?” but “Can we afford to say yes to the life we want?”
-        Your job: Generate 3-5 high-quality email themes for {segment.lower()} clients. Each theme should include:
-        Subject: A clear, honest subject line for the email (not clever or cryptic)
-        Description: 1-2 sentences explaining what the email would help the reader understand, solve, or reflect on. It should address a specific belief, pain point, or insight.
-        Tone: Professional, plainspoken, and useful. No sales language, no fluff. Each theme should feel relevant, reassuring, and practical for someone with complex finances who’s short on time.
-        Focus areas to explore:
-        Timing and decision-making
-        Superannuation use and drawdown
-        Business exits and liquidity
-        Financial clarity vs. complexity
-        Confidence and regret
-        Personal goals like travel, family, and flexibility
-        Invisible risks or missed opportunities
-        Please do not include any references to Centrelink.
-        Use Australian language i.e. not American or British
-        Ensure at least one theme is tied to financial planning issues relevant to the month of {month_year}. 
-        Each theme should include a short subject line followed by a one-sentence description. 
-        Don't be specific about the persona's situation or names, they're intended to be general in nature 
-        Please do not use en dashes (–) or em dashes (—); use standard hyphens (-) instead. 
-        The output should be in the format: 'Subject: ...\\nDescription: ...' for each theme. 
-        Return only the themes. Do not include explanations or introductory text.
+        f"""You are helping develop monthly marketing email themes for Hatch Financial Planning, based in Logan, Queensland. These are not full emails—just high-quality topic ideas that could later be expanded into full emails.
+
+        Audience: Financially successful Australians with $1M+ in investable assets, excluding their home. They’re thoughtful, time-poor, and value clarity and confidence in their financial decision-making. They’re not asking “Can we retire?” but “Can we afford to say yes to the life we want?”
+
+        Your task: Generate 3–5 email themes tailored to this audience. Each theme must include:
+        - Subject: A short, clear subject line (no clever wordplay, clickbait, or vague headlines)
+        - Description: One concise sentence explaining what the email would help the reader understand, solve, or reflect on. It must clearly address a specific belief, pain point, or opportunity.
+
+        Tone: Professional, plainspoken, and reassuring. Use clear, conversational Australian English. Avoid sales language, fluff, financial jargon, or technical complexity. These readers want clarity, not overwhelm.
+
+        Focus areas you can explore:
+        - Timing and decision-making
+        - Superannuation use and drawdown
+        - Business exit or asset liquidity
+        - Complexity vs. clarity in financial life
+        - Confidence vs. second-guessing
+        - Trade-offs around retirement lifestyle (e.g. travel, gifting, scaling back work)
+        - Regret avoidance and peace of mind
+        - Missed opportunities or hidden risks
+        - Managing market or health uncertainty
+        - Balancing logic with personal values
+
+        Guidelines:
+        - Include at least one theme tied to common financial planning questions or concerns specific to the current month: {month_year}.
+        - Use only standard hyphens (-), not em or en dashes.
+        - Format your output exactly like this for each theme:
+        Subject: [subject line]
+        Description: [one sentence explanation]
+        - Return only the themes—no commentary, lists, or explanations before or after.
+
         {extra_prompt}"""
     )
     return prompt
