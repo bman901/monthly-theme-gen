@@ -17,10 +17,10 @@ import pytz
 from smtplib import SMTP
 from email.mime.text import MIMEText
 
-now = datetime.datetime.now(pytz.timezone("Australia/Brisbane"))
-if now.day != 1:
-    print("⏳ Not the 1st of the month – skipping theme generation.")
-    exit()
+# now = datetime.datetime.now(pytz.timezone("Australia/Brisbane"))
+# if now.day != 1:
+#     print("⏳ Not the 1st of the month – skipping theme generation.")
+#     exit()
 
 # --- CONFIGURATION ---
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
@@ -95,14 +95,28 @@ def build_prompt(segment, extra_prompt=""):
 
     prompt = (
         persona_context +
+        f"""You are helping develop marketing email themes for Hatch Financial Planning in Logan, Queensland. These are not full emails—just compelling topic ideas that could later be developed into full emails.
+        Audience: People aged 50–65 with $1M+ in investable assets, approaching retirement in the next 3–10 years. They’re experienced professionals and business owners who value clarity and confidence about their financial future. They’re asking not “Can we retire?” but “Can we afford to say yes to the life we want?”
+        Your job: Generate 3-5 high-quality email themes for {segment.lower()} clients. Each theme should include:
+        Subject: A clear, honest subject line for the email (not clever or cryptic)
+        Description: 1-2 sentences explaining what the email would help the reader understand, solve, or reflect on. It should address a specific belief, pain point, or insight.
+        Tone: Professional, plainspoken, and useful. No sales language, no fluff. Each theme should feel relevant, reassuring, and practical for someone with complex finances who’s short on time.
+        Focus areas to explore:
+        Timing and decision-making
+        Superannuation use and drawdown
+        Business exits and liquidity
+        Financial clarity vs. complexity
+        Confidence and regret
+        Personal goals like travel, family, and flexibility
+        Invisible risks or missed opportunities"""
         f"Please do not include any references to Centrelink. "
-        f"Generate 3–5 helpful and timely financial planning email campaign themes for {segment.lower()} clients in Australia. "
         f"Use Australian language i.e. not American or British "
         f"Ensure at least one theme is tied to financial planning issues relevant to the month of {month_year}. "
         f"Each theme should include a short subject line followed by a one-sentence description. "
         f"Don't be specific about the persona's situation or names, they're intended to be general in nature "
         f"Please do not use en dashes (–) or em dashes (—); use standard hyphens (-) instead. "
         f"The output should be in the format: 'Subject: ...\\nDescription: ...' for each theme. "
+        f""Return only the themes. Do not include explanations or introductory text."
         f"{extra_prompt}"
     )
     return prompt
@@ -228,7 +242,7 @@ def run_monthly_theme_generation():
                 model="gpt-4o",
                 messages=[{
                     "role": "user",
-                    "content": generate_new_themes(segment) + extra_prompt
+                    "content": build_prompt(segment, extra_prompt)
                 }],
                 temperature=0.8,
             )
