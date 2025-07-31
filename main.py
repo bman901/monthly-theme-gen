@@ -116,7 +116,7 @@ def build_prompt(segment, extra_prompt=""):
         f"Don't be specific about the persona's situation or names, they're intended to be general in nature "
         f"Please do not use en dashes (–) or em dashes (—); use standard hyphens (-) instead. "
         f"The output should be in the format: 'Subject: ...\\nDescription: ...' for each theme. "
-        f""Return only the themes. Do not include explanations or introductory text."
+        f"Return only the themes. Do not include explanations or introductory text."
         f"{extra_prompt}"
     )
     return prompt
