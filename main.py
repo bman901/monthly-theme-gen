@@ -71,7 +71,7 @@ def fetch_recent_subjects(segment, months_back=6):
         dt = now - datetime.timedelta(days=30 * i)
         recent_months.append(dt.strftime("%B %Y"))
 
-    formula = f"AND(Segment = '{segment}', OR({','.join([f'Month = \'{m}\'' for m in recent_months])}))"
+    formula = f"AND(Segment = '{segment}', OR({','.join([f\"Month = '{m}'\" for m in recent_months])}))"
     params = {"filterByFormula": formula}
 
     response = requests.get(url, headers=headers, params=params)
