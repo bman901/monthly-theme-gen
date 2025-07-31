@@ -100,6 +100,7 @@ def build_prompt(segment, extra_prompt=""):
         f"Use Australian language i.e. not American or British "
         f"Ensure at least one theme is tied to financial planning issues relevant to the month of {month_year}. "
         f"Each theme should include a short subject line followed by a one-sentence description. "
+        f"Don't be specific about the persona's situation or names, they're intended to be general in nature "
         f"Please do not use en dashes (–) or em dashes (—); use standard hyphens (-) instead. "
         f"The output should be in the format: 'Subject: ...\\nDescription: ...' for each theme. "
         f"{extra_prompt}"
