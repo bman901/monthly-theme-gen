@@ -76,11 +76,10 @@ def build_prompt(segment, extra_prompt=""):
 
     if segment == "Pre-Retiree":
         persona_context = (
-            f"""Tailor these suggestions to pre-retirees like Paul and Lisa Harrington—smart, capable Australians in their late 50s juggling work, family, and finances. They're time-poor but financially comfortable. Paul is semi-retired and consults a few days a week. Lisa co-runs a small business. They have ~$1.3m in super, business equity, and a mortgage nearly paid off. Their goal is lifestyle flexibility—travel, time with family, scaling back work—but they want to feel confident they’re making smart decisions with their resources.
+            f"""Tailor these suggestions to pre-retirees like Paul and Lisa Harrington—smart, capable Australians in their late 50s juggling work, family, and finances. They're time-poor but financially comfortable. They have ~$1.3m in super, savings, and a mortgage nearly paid off. Their goal is lifestyle flexibility—travel, time with family, scaling back work—but they want to feel confident they’re making smart decisions with their resources.
             Themes should help this group:
-            - Simplify complex financial lives (e.g. multiple super accounts, offset loans, business equity)
+            - Simplify complex financial lives (e.g. multiple super accounts, offset loans, investments, business equity)
             - Know when and how to reduce work without risking future security
-            - Explore how to convert equity into income without losing control
             - Understand what “getting it right” looks like for people who’ve done well but aren’t sure they’re on track
             - Avoid procrastination and get clarity before it’s too late
             - Frame advice as a strategic edge, not a remedial fix"""
@@ -114,7 +113,6 @@ def build_prompt(segment, extra_prompt=""):
         Focus areas you can explore:
         - Timing and decision-making
         - Superannuation use and drawdown
-        - Business exit or asset liquidity
         - Complexity vs. clarity in financial life
         - Confidence vs. second-guessing
         - Trade-offs around retirement lifestyle (e.g. travel, gifting, scaling back work)
