@@ -92,7 +92,8 @@ def build_prompt(segment, extra_prompt=""):
             - Know when and how to reduce work without risking future security
             - Understand what “getting it right” looks like for people who’ve done well but aren’t sure they’re on track
             - Avoid procrastination and get clarity before it’s too late
-            - Frame advice as a strategic edge, not a remedial fix"""
+            - Frame advice as a strategic edge, not a remedial fix
+            Avoid themes that focus on drawdown, income streams, or pension-phase strategies—these are more relevant to retirees. Instead, focus on building clarity and flexibility before retirement begins."""
         )
     elif segment == "Retiree":
         persona_context = (
