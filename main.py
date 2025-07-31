@@ -16,6 +16,7 @@ import os
 import pytz
 from smtplib import SMTP
 from email.mime.text import MIMEText
+from fuzzywuzzy import fuzz
 
 now = datetime.datetime.now(pytz.timezone("Australia/Brisbane"))
 if now.day != 1:
@@ -40,6 +41,8 @@ def get_month_year():
     now = datetime.datetime.now(pytz.timezone("Australia/Brisbane"))
     return now.strftime("%B %Y")
 
+def is_similar(new_subject, existing_subjects, threshold=85):
+    return any(fuzz.partial_ratio(new_subject.lower(), old.lower()) >= threshold for old in existing_subjects)
 
 def fetch_old_themes(segment):
     url = f"https://api.airtable.com/v0/{AIRTABLE_BASE_ID}/{AIRTABLE_TABLE_NAME}"
@@ -58,17 +61,31 @@ def fetch_old_themes(segment):
             if "Subject" in record["fields"]]
 
 
-def fetch_all_subjects(segment):
-    url = f"https://api.airtable.com/v0/{AIRTABLE_BASE_ID}/{AIRTABLE_TABLE_NAME}"
+def fetch_recent_subjects(segment, months_back=6):
+    now = datetime.datetime.now(pytz.timezone("Australia/Brisbane"))
     headers = {"Authorization": f"Bearer {AIRTABLE_PAT}"}
-    params = {"filterByFormula": f"Segment = '{segment}'"}
+    url = f"https://api.airtable.com/v0/{AIRTABLE_BASE_ID}/{AIRTABLE_TABLE_NAME}"
+
+    recent_months = []
+    for i in range(months_back):
+        dt = now - datetime.timedelta(days=30 * i)
+        recent_months.append(dt.strftime("%B %Y"))
+
+    formula = f"AND(Segment = '{segment}', OR({','.join([f'Month = \'{m}\'' for m in recent_months])}))"
+    params = {"filterByFormula": formula}
+
     response = requests.get(url, headers=headers, params=params)
     if response.status_code != 200:
-        print("⚠️ Error fetching all subjects:", response.text)
-        return set()
+        print("⚠️ Error fetching recent subjects:", response.text)
+        return []
+
     records = response.json().get("records", [])
-    return set(record["fields"].get("Subject") for record in records
-               if "Subject" in record["fields"])
+    return [
+        record["fields"].get("Subject", "").strip()
+        for record in records
+        if "Subject" in record["fields"]
+    ]
+
 
 
 def build_prompt(segment, extra_prompt=""):
@@ -236,53 +253,32 @@ def run_monthly_theme_generation():
     for segment in ["Pre-Retiree", "Retiree"]:
         print(f"Processing segment: {segment}")
         old_themes = fetch_old_themes(segment)
-        all_subjects = fetch_all_subjects(segment)
+        recent_subjects = fetch_recent_subjects(segment)
         print(f"Found {len(old_themes)} reusable themes")
         new_themes = generate_new_themes(segment)
         deduped_themes = [(s, d) for s, d in new_themes
-                          if s not in all_subjects]
+                          if not is_similar(s, recent_subjects)]
 
         # If less than 3 new usable themes, ask GPT to try again with a more creative prompt
         max_retries = 3
         retries = 0
-        while len(deduped_themes) < 3 and retries < max_retries:
-            print(
-                "🔁 Not enough new themes, regenerating with broader creativity..."
-            )
-            extra_prompt = f" Think outside the box, include more creative or unconventional themes that might still be valuable."
-            raw_retry = client.chat.completions.create(
-                model="gpt-4o",
-                messages=[{
-                    "role": "user",
-                    "content": build_prompt(segment, extra_prompt)
-                }],
-                temperature=0.8,
-            )
-            retry_output = raw_retry.choices[0].message.content.strip()
-            retry_blocks = [
-                b.strip() for b in retry_output.split("\n\n") if b.strip()
-            ]
-            for block in retry_blocks:
-                subject_line = ""
-                description_line = ""
-                for line in block.split("\n"):
-                    if line.lower().startswith("subject:"):
-                        subject_line = line.split(":", 1)[1].strip()
-                    elif line.lower().startswith("description:"):
-                        description_line = line.split(":", 1)[1].strip()
-                if subject_line and description_line and subject_line not in all_subjects:
-                    deduped_themes.append((subject_line, description_line))
-                    all_subjects.add(subject_line)
-                if len(deduped_themes) >= 3:
-                    break
+        while len(deduped) < 3 and retries < 3:
+            print("🔁 Not enough themes – retrying...")
+            extra = "Add more unconventional or creative themes this time."
+            retry = generate_new_themes(segment)
+            for s, d in retry:
+                if not is_similar(s, recent_subjects):
+                    deduped.append((s, d))
+                    recent_subjects.append(s)
             retries += 1
 
         import random
-        reusable_sample = random.sample(old_themes, min(2, len(old_themes)))
-        combined = reusable_sample + deduped_themes[:3]
-        store_themes_in_airtable(segment, combined)
-        summary_lines.append(f"{segment} themes:\n" +
-                             "\n".join([f"{s} - {d}" for s, d in combined]))
+        reusable = random.sample(old_themes, min(2, len(old_themes)))
+        final_set = reusable + deduped[:3]
+
+        store_themes_in_airtable(segment, final_set)
+        summary_lines.append(f"{segment} themes:\n" + "\n".join([f"{s} – {d}" for s, d in final_set]))
+
     notify_editor("\n\n".join(summary_lines))
 
 
